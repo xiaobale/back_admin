@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>列表模块快速使用</title>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="./plugins/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="./src/css/html/common.css" media="all">
+</head>
+<body>
+<!-- ---------------------------------------------------------列表查询条件开始 ---------------------------------------------->
+    <div class="layui-margin-top20">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">文本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="textName" lay-verify="textName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">文本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="textName" lay-verify="textName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">文本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="textName" lay-verify="textName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">文本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="textName" lay-verify="textName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">文本</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="textName" lay-verify="textName" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">下拉框</label>
+                    <div class="layui-input-inline">
+                        <select name="selectName" lay-filter="selectName">
+                            <option value="">请选择</option>
+                            <option value="0">写作</option>
+                            <option value="1">阅读</option>
+                            <option value="2">游戏</option>
+                            <option value="3">音乐</option>
+                            <option value="4">旅行</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="dateBegin" autocomplete="off" class="layui-input" placeholder="请选择开始时间">
+                    </div>
+                    <label class="layui-form-label goto">至</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="date" id="dateEnd" autocomplete="off" class="layui-input" placeholder="请选择结束时间">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+<!-- ---------------------------------------------------------列表查询条件结束 ---------------------------------------------->
+
+<div class="">
+    <table id="recordList" lay-filter="recordList"></table>
+</div>
+
+
+<script src="./plugins/layui/layui.js"></script>
+
+<script type="text/html" id="operation">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" id="btnQuery"><i class="layui-icon"></i>查询</button>
+        <button class="layui-btn layui-btn-sm" id="btnAdd"><i class="layui-icon">&#xe654;</i>新增</button>
+        <button class="layui-btn layui-btn-sm" id="btnUpd"><i class="layui-icon">&#xe642;</i>修改</button>
+        <button class="layui-btn layui-btn-danger layui-btn-sm" id="btnDel"><i class="layui-icon">&#xe640;</i>删除</button>
+        <button class="layui-btn layui-btn-sm" id="btnDetail">查看</button>
+    </div>
+</script>
+
+<script type="text/html" id="op">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.sex == 0){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+
+<script>
+    layui.use(['form', 'laydate','table'], function(){
+        var form = layui.form,
+                layer = layui.layer,
+                laydate = layui.laydate,
+                table = layui.table
+                $ = layui.jquery;
+
+        //开始时间
+        laydate.render({
+            elem: '#dateBegin'
+            ,type: 'datetime'
+            ,calendar: true  //是否显示公历节日
+        });
+        //结束时间
+        laydate.render({
+            elem: '#dateEnd'
+            ,type: 'datetime'
+            ,calendar: true  //是否显示公历节日
+        });
+
+        //自定义验证规则
+        form.verify({
+            dateBegin: function(value) {
+                if (value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            },
+            dateEnd: function(value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        //监听指定开关
+        form.on('switch(switchTest)', function(data) {
+            layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data) {
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+
+
+
+        layer.parentFun = function (){
+            layer.msg('弹出框调用了该方法');
+        }
+
+        //第一个实例
+        table.render({
+            elem: '#recordList'
+            ,id: 'tableId'
+            ,height: 'full'
+            ,url: './datas/table.json' //数据接口
+            ,method: 'post'
+            ,page: true //开启分页
+            ,limit: 10  // 每页显示的条数（默认：10）
+            ,limits: [5,10,15,20] //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
+            ,toolbar: '#operation'
+            ,title: '用户表' //导出文件的名称
+            ,cols: [[ //表头
+                {field: 'id', title: 'ID', width:80, sort: true, fixed: 'left', type: 'checkbox'}
+                ,{field: 'username', title: '用户名', width:80}
+                ,{field: 'sex', title: '性别', width:80, sort: true, templet: function(obj){
+                    return obj.sex == 0?'男':'女'
+                }}
+                ,{field: 'city', title: '城市', width:80}
+                ,{field: 'sign', title: '签名', width: 177}
+                ,{field: 'experience', title: '积分', width: 80, sort: true}
+                ,{field: 'score', title: '评分', width: 80, sort: true}
+                ,{field: 'classify', title: '职业', width: 80}
+                ,{field: 'wealth', title: '财富', width: 135, sort: true}
+                ,{field: 'op', title: '操作', width: 200, toolbar: '#op'}
+            ]]
+            ,done: function(res, curr, count){
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+//                console.log(res);
+
+                //得到当前页码
+//                console.log(curr);
+
+                //得到数据总量
+//                console.log(count);
+            }
+        });
+
+        table.on('checkbox(tableId)', function(obj){
+            console.log(obj.checked); //当前是否选中状态
+            console.log(obj.data); //选中行的相关数据
+            console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+        });
+
+
+        // 新增记录
+        $('#btnAdd').on('click', function(){
+            layer.open({
+                type: 2,
+                area: ['800px', '600px'],
+                content: 'form.html' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+            });
+        });
+
+        // 修改记录
+        $('#btnUpd').on('click', function(){
+            layer.open({
+                type: 2,
+                area: ['800px', '200px'],
+                content: 'add.html' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+            });
+        });
+
+        // 查看记录详情
+        $('#btnDetail').on('click', function(){
+            var checkStatus = table.checkStatus('tableId'); //test即为基础参数id对应的值
+            if(checkStatus.data.length != 1){
+                layer.msg('请选择一条记录');
+                return;
+            }
+            layer.open({
+                type: 2
+                ,area: ['800px', '600px']
+                ,maxmin:true
+                ,content: 'form.html' //这里content是一个URL，如果你不想让iframe出现滚动条，你还可以content: ['http://sentsin.com', 'no']
+            });
+        });
+
+
+        // 删除记录
+        $('#btnDel').on('click', function(){
+            var checkStatus = table.checkStatus('tableId'); //test即为基础参数id对应的值
+            if(checkStatus.data.length == 0){
+                layer.msg('请选择记录');
+                return;
+            }
+            layer.confirm('确认要删除选中的记录吗?', {icon: 3, title:'提示'}, function(index){
+                //do something
+                console.log('删除成功.');
+                layer.close(index);
+            });
+        });
+    });
+</script>
+</body>
+</html>
